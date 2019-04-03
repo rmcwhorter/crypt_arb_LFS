@@ -13,6 +13,7 @@ from os import listdir
 from os.path import isfile, join
 import matplotlib as mpl
 import random
+import arrow as ar
 
 def sign(a):
     if(a != 0):
@@ -84,9 +85,9 @@ aggregate_trials = []
 aggregate_actionable_percent_total = []
 barriers = []
 
-for stdev_barrier in [stdev_barrier]:#[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0]
-    for data_epochs in range(1,2): #max_data_epochs+1
-        for epochs in range(15,16):
+for stdev_barrier in [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0]:#[stdev_barrier]
+    for data_epochs in range(1,6): #max_data_epochs+1
+        for epochs in range(3,36):
             full_interval = data_dict[currencies[-1]].index.values
             data_interval = full_interval[0:-1-((data_epochs + test_epochs) * epochs)]
             indices_data_interval = range(len(data_interval))
@@ -201,7 +202,7 @@ for stdev_barrier in [stdev_barrier]:#[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1
             print()
 
             #Metric records
-            indices.append(str(data_epochs) + " predicting " + str(epochs))
+            indices.append(str(data_epochs * epochs) + " predicting " + str(epochs))
             long_percent_correct_metric.append(long_successes/long_trials * 100)
             short_percent_correct_metric.append(short_successes/short_trials * 100)
             no_position_correct_prediction.append(no_pos_successes/no_pos_trials * 100)
@@ -221,8 +222,10 @@ for a in range(len(j)):
 
 out_df = pd.DataFrame(data=d, index=indices)
 
-with open("master_output.pkl", 'wb') as handle: pickle.dump(out_df, handle, protocol=pickle.HIGHEST_PROTOCOL)
-out_df.to_excel("master_output.xlsx")
+lt = ar.utcnow().span('microsecond')[0].to("US/Central").format("YYYY-MM-DD HH-mm-ss SSSS ZZ")
+
+with open("result_data/" + "master_output_" + lt + ".pkl", 'wb') as handle: pickle.dump(out_df, handle, protocol=pickle.HIGHEST_PROTOCOL)
+out_df.to_excel("excel_summaries/" + "master_output_" + lt + ".xlsx")
 '''
 indices = []
 long_percent_correct_metric = []
