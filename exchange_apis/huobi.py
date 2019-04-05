@@ -1,8 +1,6 @@
 #!/usr/bin/python
 '''
 Huobi:
-    Access Key: 04d2c7da-26786a3c-0af87097-48d99
-    Private Key: cbd44709-fed7ac60-53ba35ad-f30a1
     NOTE: This key expires in 90 days, since it isn't bound to an IP Address
     
     The REST API:
