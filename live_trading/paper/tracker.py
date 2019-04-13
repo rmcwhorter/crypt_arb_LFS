@@ -46,15 +46,17 @@ class tracker:
             }
             
         self.sock.send(json.dumps(self.begin_request))
-        t1 = threading.Thread(target=thread_tracker, args=(self,))
-        t1.start()
+        self.t1 = threading.Thread(target=thread_tracker, args=(self,))
+        self.t1.start()
         
     
     
     def end_tracking(self):
+        print("Ending tracking on ", self.exchange, " ", self.ticker)
         self.flag = False
-        t99 = threading.Thread(target=thread_terminator, args=(self,))
-        t99.start()
+        #wait a bit and then force terminate the thread
+        time.sleep(10)
+        print(self.t1.getName(),": ",self.t1.is_alive())
 
 def decode(data):
     return json.loads(zlib.decompress(data, 16+zlib.MAX_WBITS).decode('utf8'))

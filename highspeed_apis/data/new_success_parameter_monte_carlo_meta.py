@@ -47,13 +47,19 @@ def predicted(k, mu_k, stdev_k, barrier, epoch=None):
 
 
 
+base_url = 'monte_carlo_data/'
+subset = "_MASSIVE_THIRD_"
 
+currencies = ['qtumbtc','btcusdt', 'qtumusdt']
+extension = '.pkl'
 
+'''
 base_url = 'monte_carlo_data/'
 subset = "_MASSIVE_"
 
 currencies = ['ltcusdt','btcusdt','ltcbtc']  #['btcusdt','ethusdt','ethbtc']
 extension = '.pkl'
+'''
 
 data_dict = {}
 
@@ -84,10 +90,12 @@ aggregate_actionable_trades = []
 aggregate_trials = []
 aggregate_actionable_percent_total = []
 barriers = []
+k_mu_array = []
+k_stdev_array = []
 
-for stdev_barrier in [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0]:#[stdev_barrier]
-    for data_epochs in range(1,6): #max_data_epochs+1
-        for epochs in range(3,36):
+for stdev_barrier in [1,1.25,1.5,2]:#[stdev_barrier] #[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0]
+    for data_epochs in range(1,2): #max_data_epochs+1
+        for epochs in range(15,25):
             full_interval = data_dict[currencies[-1]].index.values
             data_interval = full_interval[0:-1-((data_epochs + test_epochs) * epochs)]
             indices_data_interval = range(len(data_interval))
@@ -129,7 +137,7 @@ for stdev_barrier in [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.
                 c = np.array(data_dict[currencies[-1]]['close'][data_start:data_end].values)
 
                 #compute k
-                k = np.sum((a/b)-c)            
+                k = np.sum((a*b)-c)            
                 tmp_k.append(k)
 
                 #compute actual
@@ -213,10 +221,12 @@ for stdev_barrier in [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.
             aggregate_trials.append(long_trials + short_trials + no_pos_trials)
             aggregate_actionable_percent_total.append((long_trials + short_trials)/(long_trials + short_trials + no_pos_trials)*100)
             barriers.append(stdev_barrier)
+            k_mu_array.append(mu)
+            k_stdev_array.append(k_stdev)
 
 d = {}
-h = ["Long Correct [%]", "Short Correct [%]", "No Pos Correct [%]", "Long + Short Correct [%]", "Total Correct [%]", "Garbage of Total [%]", "Actionable Trades [N]", "Trials [N]", "Actionable of Total [%]", "STDEV Barrier [R]"]
-j = [long_percent_correct_metric, short_percent_correct_metric, no_position_correct_prediction, aggregate_position_taken_percent_correct, aggregate_correct_percent, garbage_as_percent_of_total, aggregate_actionable_trades, aggregate_trials, aggregate_actionable_percent_total, barriers]
+h = ["Long Correct [%]", "Short Correct [%]", "No Pos Correct [%]", "Long + Short Correct [%]", "Total Correct [%]", "Garbage of Total [%]", "Actionable Trades [N]", "Trials [N]", "Actionable of Total [%]", "STDEV Barrier [R]", "K Mu", "K STDEV"]
+j = [long_percent_correct_metric, short_percent_correct_metric, no_position_correct_prediction, aggregate_position_taken_percent_correct, aggregate_correct_percent, garbage_as_percent_of_total, aggregate_actionable_trades, aggregate_trials, aggregate_actionable_percent_total, barriers, k_mu_array, k_stdev_array]
 for a in range(len(j)):
     d[h[a]] = j[a]
 
@@ -225,7 +235,7 @@ out_df = pd.DataFrame(data=d, index=indices)
 lt = ar.utcnow().span('microsecond')[0].to("US/Central").format("YYYY-MM-DD HH-mm-ss SSSS ZZ")
 
 with open("result_data/" + "master_output_" + lt + ".pkl", 'wb') as handle: pickle.dump(out_df, handle, protocol=pickle.HIGHEST_PROTOCOL)
-out_df.to_excel("excel_summaries/" + "master_output_" + lt + ".xlsx")
+out_df.to_excel("excel_summaries/" + "master_output_" + currencies[0] + "_" + currencies[1] + "_" + currencies[2] + "_" +lt + ".xlsx")
 '''
 indices = []
 long_percent_correct_metric = []

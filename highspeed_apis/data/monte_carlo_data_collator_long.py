@@ -39,10 +39,15 @@ def dict_val_exists_and_equals(dictionary, value, check):
     else:
         return False
 
-subset = "_MASSIVE_"
+subset = "_MASSIVE_THIRD_"
 
-currencies = ['ltcusdt','btcusdt','ltcbtc'] #['ltcusdt','btcusdt','ltcbtc']
-responses = {'ltcusdt' : [],'btcusdt' : [],'ltcbtc' : []} #{'ltcusdt' : [],'btcusdt' : [],'ltcbtc' : []}
+#['qtum/usdt', 'qtum/btc/btc/usdt', 'qtum/eth/eth/btc/btc/usdt']
+currencies = ['qtumusdt','qtumbtc','btcusdt', 'qtumeth','ethbtc'] #['ltcusdt','btcusdt','ltcbtc']
+#responses = {'ltcusdt' : [],'btcusdt' : [],'ltcbtc' : []} #{'ltcusdt' : [],'btcusdt' : [],'ltcbtc' : []}
+responses = {}
+for c in currencies:
+    responses[str(c)] = []
+
 
 start_time = 1546326000
 end_time = start_time + 150*60
@@ -65,12 +70,15 @@ for a in currencies:
         ws.send(json.dumps(formatted_request))
         tmp_response = json.loads(zlib.decompress(ws.recv(), 16+zlib.MAX_WBITS).decode('utf8'))      
         
-        while(not dict_val_exists_and_equals(tmp_response, 'status', 'ok') and not dict_val_exists_and_equals(tmp_response, 'data', not [])):
+        while(not dict_val_exists_and_equals(tmp_response, 'status', 'ok')): # and not dict_val_exists_and_equals(tmp_response, 'data', not [])
             ws.send(json.dumps(formatted_request))
-            tmp_response = json.loads(zlib.decompress(ws.recv(), 16+zlib.MAX_WBITS).decode('utf8'))
+            print(tmp_response)
             print("Failed to gather data")
-            time.sleep(0.5)
+            tmp_response = json.loads(zlib.decompress(ws.recv(), 16+zlib.MAX_WBITS).decode('utf8'))
+            time.sleep(1)
         
+        print("Successfully Gathered Data")
+
         #print(tmp_response)
         
         tmp = tmp_response['data']

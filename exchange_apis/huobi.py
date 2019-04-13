@@ -40,10 +40,11 @@ import threading
 
 #GET /market/detail/merged Get Ticker
 def huobi_request(symbol, standardize=True):
-    url = 'https://api.huobi.com/market/detail/merged'
-    params = {'symbol':symbol}
-    data = requests.get(url=url, params = params).json()
+    url = 'https://api.huobi.com/v1/common/symbols'
+    #params = {'symbol':symbol}
+    data = requests.get(url=url).json()
     
+    '''
     if(data['status'] == 'ok'):
         df = pd.DataFrame.from_dict(data['tick'], orient='index', columns=['Values'])
         if(standardize):
@@ -59,3 +60,6 @@ def huobi_request(symbol, standardize=True):
         print(data['err-msg'])
     else:
         print("Error occured, likely timed out")
+    '''
+
+data = requests.get(url=url).json()
