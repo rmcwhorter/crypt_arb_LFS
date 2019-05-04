@@ -16,7 +16,7 @@ import matplotlib as mpl
 #1552331924
 #1546326000 Jan 1st at 1am
 current_time = int(str(time.time())[0:len('1552331924')])-5 #current time minus 5 min
-from_time =  1552201200
+from_time =  1546326000
 
 trial_results = []
 
@@ -39,7 +39,7 @@ def dict_val_exists_and_equals(dictionary, value, check):
     else:
         return False
 
-subset = "_MASSIVE_THIRD_"
+subset = "_MASSIVE_FOURTH_"
 
 #['qtum/usdt', 'qtum/btc/btc/usdt', 'qtum/eth/eth/btc/btc/usdt']
 currencies = ['qtumusdt','qtumbtc','btcusdt', 'qtumeth','ethbtc'] #['ltcusdt','btcusdt','ltcbtc']

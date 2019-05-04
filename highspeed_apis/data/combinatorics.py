@@ -17,6 +17,15 @@ import requests
 url = 'https://api.huobi.com/v1/common/symbols'
 data = requests.get(url=url).json()['data']
 
+inv_data = []
+for a in data:
+    tmp_a = a['base-currency'][:]
+    tmp_b = a['quote-currency'][:]
+    total = dict(a)
+    total['quote-currency'] = tmp_a
+    total['base-currency'] = tmp_b
+    inv_data.append(total)
+
 def combine(length, base, quote):
     out = []
     for tick in data:
@@ -29,12 +38,11 @@ def combine(length, base, quote):
 
     return out
 
-for tick in data:
+for tick in data+inv_data:
     c = combine(10, tick['base-currency'], tick['quote-currency'])
     print()
     print(tick['base-currency'], " ", tick['quote-currency'])
     print(c)
     print(len(c))
-
 
 print("EOF")
